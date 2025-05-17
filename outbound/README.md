@@ -62,7 +62,7 @@ curl -X POST https://<your-ngrok-url>/outbound-call \
 ```
 
 ```bash
-curl -X POST https://1e36-216-128-28-148.ngrok-free.app/outbound-call \
+curl -X POST https://786e-216-128-28-148.ngrok-free.app/outbound-call \
 -H "Content-Type: application/json" \
 -d '{
    "prompt": "You are Eric, an outbound car sales agent. You are calling to sell a new car to the customer. Be friendly and professional and answer all questions.",
