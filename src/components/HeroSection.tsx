@@ -1,99 +1,87 @@
-
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Mic, Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
+import { useElevenLabs } from "@/context/ElevenLabsContext";
 
 type Message = {
+  id: string;
   text: string;
-  sender: "user" | "system";
+  sender: "user" | "assistant";
   timestamp: Date;
 };
 
 const HeroSection = () => {
   const [inputValue, setInputValue] = useState("");
-  const [isListening, setIsListening] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [showChat, setShowChat] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+  const {
+    isRecording,
+    isProcessingVoice,
+    transcript,
+    startElevenLabsConversation,
+    endElevenLabsConversation,
+    sendTextToElevenLabs,
+    onMessage
+  } = useElevenLabs();
+
+  // Set up message handler
+  useEffect(() => {
+    onMessage((message) => {
+      const newMessage: Message = {
+        id: message.id,
+        text: message.content,
+        sender: message.role,
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, newMessage]);
+      
+      // Show chat if not already visible
+      if (!showChat) {
+        setShowChat(true);
+      }
+    });
+  }, [onMessage, showChat]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  const handleVoiceInput = () => {
-    if (!isListening) {
-      // Start listening
-      setIsListening(true);
-      if (window.SpeechRecognition || window.webkitSpeechRecognition) {
-        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognitionAPI();
-        
-        recognition.lang = "en-US";
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-        
-        recognition.onresult = (event: SpeechRecognitionEvent) => {
-          const speechResult = event.results[0][0].transcript;
-          setInputValue(speechResult);
-          setIsListening(false);
-        };
-        
-        recognition.onerror = () => {
-          setIsListening(false);
-        };
-        
-        recognition.onend = () => {
-          setIsListening(false);
-        };
-        
-        recognition.start();
-      } else {
-        console.error("Speech recognition not supported in this browser");
-        setIsListening(false);
-      }
+  const handleVoiceInput = async () => {
+    if (isRecording) {
+      await endElevenLabsConversation();
     } else {
-      // Stop listening
-      setIsListening(false);
-    }
-    
-    // Focus the input after toggling voice input
-    if (inputRef.current) {
-      inputRef.current.focus();
+      await startElevenLabsConversation();
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (inputValue.trim()) {
-      const newMessage: Message = {
+      // Add user message immediately
+      const userMessage: Message = {
+        id: crypto.randomUUID(),
         text: inputValue.trim(),
         sender: "user",
         timestamp: new Date(),
       };
       
-      // Add user message
-      setMessages(prevMessages => [...prevMessages, newMessage]);
-      console.log("Message sent:", inputValue);
+      setMessages(prev => [...prev, userMessage]);
       
-      // Show the chat history if it's not already visible
+      // Show chat if not already visible
       if (!showChat) {
         setShowChat(true);
       }
       
-      // Clear the input
-      setInputValue("");
+      // Send to ElevenLabs
+      await sendTextToElevenLabs(inputValue.trim());
       
-      // Simulate system response
-      setTimeout(() => {
-        const systemResponse: Message = {
-          text: "Thank you for your message. How can I assist you further?",
-          sender: "system",
-          timestamp: new Date(),
-        };
-        setMessages(prevMessages => [...prevMessages, systemResponse]);
-      }, 1000);
+      // Clear input
+      setInputValue("");
     }
   };
 
@@ -125,9 +113,9 @@ const HeroSection = () => {
           {showChat && messages.length > 0 && (
             <ScrollArea className="h-[calc(100%-110px)] mb-4 pr-4" ref={scrollAreaRef}>
               <div className="flex flex-col space-y-4">
-                {messages.map((message, index) => (
+                {messages.map((message) => (
                   <div
-                    key={index}
+                    key={message.id}
                     className={`p-3 rounded-lg max-w-[80%] ${
                       message.sender === "user"
                         ? "bg-council-blue/90 text-white self-end"
@@ -158,14 +146,25 @@ const HeroSection = () => {
             <Button 
               className="bg-council-blue hover:bg-blue-900 rounded-l-none px-5"
               onClick={inputValue ? handleSubmit : handleVoiceInput}
+              disabled={isProcessingVoice}
             >
               {inputValue ? (
                 <Send className="h-5 w-5" />
               ) : (
-                <Mic className={`h-5 w-5 ${isListening ? "animate-pulse text-red-500" : ""}`} />
+                <Mic className={`h-5 w-5 ${isRecording ? "animate-pulse text-red-500" : ""}`} />
               )}
             </Button>
           </div>
+          
+          {/* Voice status */}
+          {isRecording && (
+            <div className="flex items-center justify-center mt-2 space-x-2">
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+              <p className="text-gray-300 text-sm sm:text-base font-medium">
+                {isProcessingVoice ? 'Connecting...' : transcript ? `"${transcript}"` : 'Voice mode active'}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
