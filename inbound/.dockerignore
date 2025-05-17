@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+.env
+.env.example
+.git
+.gitignore
+Dockerfile
+.dockerignore
+cloudbuild.yaml
+env.yaml
+README.md
