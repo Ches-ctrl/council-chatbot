@@ -3,7 +3,7 @@ const Logo = () => {
   return (
     <div className="h-10 w-auto">
       <img 
-        src="/lovable-uploads/a97419be-7efb-4239-905e-caef15001ffe.png" 
+        src="/lovable-uploads/d2e38e50-2644-4251-b681-942e913d9c59.png" 
         alt="Oxford City Council Logo" 
         className="h-full w-auto"
       />
