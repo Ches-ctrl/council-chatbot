@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useEffect } from "react";
-import { Mic, MicOff, Maximize, Minimize } from "lucide-react";
+import { Mic, MicOff, Maximize, Minimize, Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
