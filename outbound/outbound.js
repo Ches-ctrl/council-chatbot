@@ -33,7 +33,7 @@ const fastify = Fastify();
 fastify.register(fastifyFormBody);
 fastify.register(fastifyWs);
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8080;
 
 // Root route for health check
 fastify.get("/", async (_, reply) => {
@@ -335,7 +335,11 @@ fastify.register(async fastifyInstance => {
 });
 
 // Start the Fastify server
-fastify.listen({ port: PORT }, err => {
+// For Cloud Run, we need to listen on 0.0.0.0
+fastify.listen({
+  port: PORT,
+  host: '0.0.0.0'
+}, err => {
   if (err) {
     console.error("Error starting server:", err);
     process.exit(1);
