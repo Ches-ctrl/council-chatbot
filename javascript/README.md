@@ -61,6 +61,16 @@ curl -X POST https://<your-ngrok-url>/outbound-call \
    }'
 ```
 
+```bash
+curl -X POST https://1e36-216-128-28-148.ngrok-free.app/outbound-call \
+-H "Content-Type: application/json" \
+-d '{
+   "prompt": "You are Eric, an outbound car sales agent. You are calling to sell a new car to the customer. Be friendly and professional and answer all questions.",
+   "first_message": "Hello Thor, my name is Eric, I heard you were looking for a new car! What model and color are you looking for?",
+   "number": "447874943523"
+   }'
+```
+
 ## Troubleshooting
 
 - Ensure the environment variable is properly set
