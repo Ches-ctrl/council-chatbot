@@ -1,0 +1,57 @@
+substitutions:
+  _SERVICE_NAME: 'communitymafia-frontend'
+  _REGION: 'europe-west1'
+  _COMMIT_SHA: 'latest' # Default tag if $COMMIT_SHA is not available
+
+steps:
+  # 1. Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build Docker Image'
+    args:
+      [
+        'build',
+        '-t',
+        'eu.gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${_COMMIT_SHA}',
+        '.',
+      ]
+
+  # 2. Push the Docker image to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push to GCR'
+    args:
+      [
+        'push',
+        'eu.gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${_COMMIT_SHA}',
+      ]
+
+  # 3. Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'Deploy to Cloud Run'
+    entrypoint: gcloud
+    args:
+      [
+        'run',
+        'deploy',
+        '${_SERVICE_NAME}',
+        '--image',
+        'eu.gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${_COMMIT_SHA}',
+        '--region',
+        '${_REGION}',
+        '--port',
+        '80',
+        '--platform',
+        'managed',
+        '--allow-unauthenticated',
+        '--env-vars-file',
+        'env.yaml',
+        '--project',
+        '$PROJECT_ID',
+        '--quiet' # Suppresses interactive prompts
+      ]
+
+# Specify the image to be built and pushed
+images:
+  - 'eu.gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${_COMMIT_SHA}'
+
+options:
+  logging: CLOUD_LOGGING_ONLY 
