@@ -1,17 +1,12 @@
 
 const Logo = () => {
   return (
-    <div className="h-10 w-10 relative">
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 0C8.954 0 0 8.954 0 20C0 31.046 8.954 40 20 40C31.046 40 40 31.046 40 20C40 8.954 31.046 0 20 0Z" fill="white" />
-        <path d="M20 5C17.5 5 15.4 6 14 7.5C15.4 9 17.5 10 20 10C22.5 10 24.6 9 26 7.5C24.6 6 22.5 5 20 5Z" fill="#1E3587" />
-        <path d="M14 12C12.5 12 11 12.5 10 13.5C11 14.5 12.5 15 14 15C15.5 15 17 14.5 18 13.5C17 12.5 15.5 12 14 12Z" fill="#1E3587" />
-        <path d="M26 12C24.5 12 23 12.5 22 13.5C23 14.5 24.5 15 26 15C27.5 15 29 14.5 30 13.5C29 12.5 27.5 12 26 12Z" fill="#1E3587" />
-        <path d="M6 18C6 19.5 6.5 21 7.5 22C8.5 21 9 19.5 9 18C9 16.5 8.5 15 7.5 14C6.5 15 6 16.5 6 18Z" fill="#1E3587" />
-        <path d="M31 18C31 16.5 31.5 15 32.5 14C33.5 15 34 16.5 34 18C34 19.5 33.5 21 32.5 22C31.5 21 31 19.5 31 18Z" fill="#1E3587" />
-        <path fillRule="evenodd" clipRule="evenodd" d="M5 25C5 24.448 5.448 24 6 24H34C34.552 24 35 24.448 35 25V28C35 28.552 34.552 29 34 29H6C5.448 29 5 28.552 5 28V25Z" fill="#1E3587" />
-        <path fillRule="evenodd" clipRule="evenodd" d="M10 30C10 29.448 10.448 29 11 29H29C29.552 29 30 29.448 30 30V33C30 33.552 29.552 34 29 34H11C10.448 34 10 33.552 10 33V30Z" fill="#1E3587" />
-      </svg>
+    <div className="h-10 w-auto">
+      <img 
+        src="/lovable-uploads/a97419be-7efb-4239-905e-caef15001ffe.png" 
+        alt="Oxford City Council Logo" 
+        className="h-full w-auto"
+      />
     </div>
   );
 };
