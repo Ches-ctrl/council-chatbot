@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Mic, Send } from "lucide-react";
 import { Button } from "./ui/button";
@@ -19,7 +18,6 @@ const HeroSection = () => {
   const [showChat, setShowChat] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const {
     isRecording,
@@ -49,18 +47,6 @@ const HeroSection = () => {
       }
     });
   }, [onMessage, showChat]);
-
-  // Auto-scroll to bottom when messages change
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // Function to scroll to the bottom of the messages
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -142,8 +128,6 @@ const HeroSection = () => {
                     </p>
                   </div>
                 ))}
-                {/* Invisible div at the end to scroll to */}
-                <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
           )}
