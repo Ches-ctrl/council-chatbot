@@ -3,6 +3,7 @@ import WebSocket from "ws";
 import dotenv from "dotenv";
 import fastifyFormBody from "@fastify/formbody";
 import fastifyWs from "@fastify/websocket";
+import fastifyCors from "@fastify/cors";
 import Twilio from "twilio";
 
 // Load environment variables from .env file
@@ -32,6 +33,12 @@ if (
 const fastify = Fastify();
 fastify.register(fastifyFormBody);
 fastify.register(fastifyWs);
+// Register CORS to allow requests from any origin
+fastify.register(fastifyCors, {
+  origin: true, // Allow all origins
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+  credentials: true
+});
 
 const PORT = process.env.PORT || 8080;
 
